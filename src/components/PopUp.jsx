@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 function PopUp({ selectedItem, quantity, price, onClose }) {
   const [popupQuantity, setPopupQuantity] = useState(quantity);
   const [popupPrice, setPopupPrice] = useState(price);
+  const [orderType, setOrderType] = useState("");
+
+  const navigate = useNavigate(); // Create navigate function instance
 
   const handleQuantity = (event) => {
     const newQuantity = parseInt(event.target.value) || 1;
@@ -14,7 +17,16 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
       setPopupPrice(newPrice);
     }
   };
-  const handleOrder = () => {};
+
+  const handleOrder = (event) => {
+    setOrderType(event.target.value);
+  };
+
+  const handleAddOrder = () => {
+    // Use navigate to go to OrderDetails with state
+    navigate('/order-details', { state: { orderType, selectedItem, popupQuantity, popupPrice } });
+    onClose(); // Optionally close the popup
+  };
 
   return (
     <>
@@ -22,13 +34,11 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
         <div className="popup">
           <div className="popup-content">
             <div>
-              <h5>TotalPrice : {popupPrice} ฿</h5>
+              <h5>Total Price: {popupPrice} ฿</h5>
             </div>
-
             <div className="m-3">
               <label>{selectedItem.name}</label>
             </div>
-
             <div className="mt-3">
               <label>
                 Quantity:
@@ -47,10 +57,9 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
                   name="orderType"
                   value="dineIn"
                   id="dineIn"
+                  onChange={handleOrder}
                 />
-                <label htmlFor="dineIn" className="ml-2">
-                  Dine in
-                </label>
+                <label htmlFor="dineIn" className="ml-2">Dine in</label>
               </div>
               <div className="d-flex align-items-center">
                 <input
@@ -58,17 +67,15 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
                   name="orderType"
                   value="takeAway"
                   id="takeAway"
+                  onChange={handleOrder}
                 />
-                <label htmlFor="takeAway" className="ml-2">
-                  Take away
-                </label>
+                <label htmlFor="takeAway" className="ml-2">Take away</label>
               </div>
             </div>
-
             <Button
               variant="outline-success"
               className="mt-3"
-              onClick={onClose}>
+              onClick={handleAddOrder}>
               Add to order
             </Button>
           </div>
