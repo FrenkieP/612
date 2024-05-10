@@ -4,37 +4,39 @@ import { Table, Container, Card, Button } from "react-bootstrap";
 
 function OrderDetails() {
   const location = useLocation();
-  const { orderType, selectedItem, popupQuantity, popupPrice } = location.state;
+  const orders = location?.state.orders || [];
 
   return (
     <Container className="mt-4">
       <Card>
         <Card.Header as="h3">Order Summary</Card.Header>
         <Card.Body>
-          <Table striped bordered hover responsive>
+          <Table striped bordered hover responsive variant="dark">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Order Type</th>
+                <th>Total Price</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr>
-                <td>Item:</td>
-                <td>{selectedItem ? selectedItem.name : "No item selected"}</td>
-              </tr>
-              <tr>
-                <td>Price per Item:</td>
-                <td>{selectedItem ? `$${selectedItem.price}` : "$0"}</td>
-              </tr>
-              <tr>
-                <td>Quantity:</td>
-                <td>{popupQuantity}</td>
-              </tr>
-              <tr>
-                <td>Order Type:</td>
-                <td>{orderType}</td>
-              </tr>
-              <tr className="table-success">
-                {" "}
-                {/* Using Bootstrap contextual class for emphasis */}
-                <td>Total Price:</td>
-                <td>{`$${popupPrice.toFixed(2)}`}</td>
-              </tr>
+              {orders.length > 0 ? (
+                orders.map((order, index) => (
+                  <tr key={index}>
+                    <td>{order.selectedItem}</td>
+                    <td>฿{order.price.toFixed(2)}</td>
+                    <td>{order.quantity}</td>
+                    <td>{order.orderType}</td>
+                    <td>฿{order.totalPrice.toFixed(2)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">No orders placed.</td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </Card.Body>

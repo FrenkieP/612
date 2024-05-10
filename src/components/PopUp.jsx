@@ -6,6 +6,7 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
   const [popupQuantity, setPopupQuantity] = useState(quantity);
   const [popupPrice, setPopupPrice] = useState(price);
   const [orderType, setOrderType] = useState("");
+  const [orders, setOrders] = useState([]);
 
   const navigate = useNavigate(); // Create navigate function instance
 
@@ -23,9 +24,19 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
   };
 
   const handleAddOrder = () => {
-    // Use navigate to go to OrderDetails with state
-    navigate('/order-details', { state: { orderType, selectedItem, popupQuantity, popupPrice } });
-    onClose(); // Optionally close the popup
+    const newOrder = {
+      orderType,
+      selectedItem: selectedItem.name,
+      price: selectedItem.price,
+      quantity: popupQuantity,
+      totalPrice: popupPrice,
+    };
+    const updatedOrders = [...orders, newOrder];
+    setOrders(updatedOrders); 
+    navigate("/order-details", {
+      state: { orders: updatedOrders },
+    });
+    onClose(); 
   };
 
   return (
@@ -59,7 +70,9 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
                   id="dineIn"
                   onChange={handleOrder}
                 />
-                <label htmlFor="dineIn" className="ml-2">Dine in</label>
+                <label htmlFor="dineIn" className="ml-2">
+                  Dine in
+                </label>
               </div>
               <div className="d-flex align-items-center">
                 <input
@@ -69,7 +82,9 @@ function PopUp({ selectedItem, quantity, price, onClose }) {
                   id="takeAway"
                   onChange={handleOrder}
                 />
-                <label htmlFor="takeAway" className="ml-2">Take away</label>
+                <label htmlFor="takeAway" className="ml-2">
+                  Take away
+                </label>
               </div>
             </div>
             <Button
